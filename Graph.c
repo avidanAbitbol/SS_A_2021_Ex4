@@ -5,7 +5,7 @@
 
 node* create_Node(int ID){
     node* newNode = (node *)malloc(sizeof(node));
-    if(!newNode){//if memory didn't allocate
+    if(!newNode){
         exit(1);
     }
     else {
@@ -25,65 +25,78 @@ edge* create_Edge(pnode target, int w){
 }
 
 void insert_node_cmd(pnode *head){
-    int newNode;
-    pnode addedNode;
-    if(nodeExist(head, newNode)==0){
-        addedNode = create_Node(newNode);
-    }
-    else {
-        pnode current = *head;
-        while (current != NULL) {
-            if (current->node_num == newNode) {
-                break;
-            }
-            current = current->next;
-        }
-        pedge edges = current->edges;
-        while (edges != NULL) {
-            pedge tmp = edges->next;
-            edges = tmp;
-            free(tmp);
-        }
-        current->edges = NULL;
-        addedNode = current;
-    }
-    pedge *insertEdge = &(addedNode->edges);
-    int target = -1;
-    scanf("%d",&target);
-    printf("%d",&target);
-        if(target==-1){
-            return;
-        }
-        pnode tarNode = NULL;
-        if(nodeExist(head,target)==0){
-            create_Node(target);
-        }
-        pnode current = *head;
-        while(current!=NULL){
-            if(current->node_num==target){
-                break;
-            }
-            current=current->next;
-        }
-        tarNode = current;
+  int src, dest, size;
+	char flag = 0;
+	scanf("%d", &src);
+	pnode N_Src = nodeExist(head, src);
+	if (N_Src == NULL) {
+		N_Src = (pnode)malloc(sizeof(node));
+		if (N_Src == NULL) {
+			return;
+		}
+		else {
+			N_Src->node_num = src;
+			N_Src->edges = NULL;
+			N_Src->next = *head;
+			*head = N_Src;
+		}
+	}
+	else {
+		pedge Edge = N_Src->edges;
+		while (Edge != NULL) {
+			pedge temp = Edge->next;
+			free(Edge);
+			Edge = temp;
+		}
+		N_Src->edges = NULL;
 
-        int weight = -1;
-        scanf("%d",&weight);
-        *insertEdge = create_Edge(tarNode,weight);
-    }
+	}
+	int exist =scanf("%d", &dest);
+	if (dest >= 0) {
+		while (exist!=0&&flag != 'n' && flag != EOF&&flag != 'B'){
+		    pnode N_Dest = nodeExist(head, dest);
+			if (N_Dest == NULL) {
+				N_Dest = (pnode)malloc(sizeof(node));
+				if (N_Dest == NULL) {
+					return;
+				}
+				else {
+					N_Dest->node_num = dest;
+					N_Dest->edges = NULL;
+					N_Dest->next = *head;
+					*head = N_Dest;
+				}
+			}
+			scanf("%d", &size);
+			if (N_Src->edges == NULL) {
+				N_Src->edges = (pedge)malloc(sizeof(edge));
+				if (N_Src->edges == NULL) {
+					return;
+				}
+				N_Src->edges->target = N_Dest;
+				N_Src->edges->weight = size;
+				N_Src->edges->next = NULL;
+			}
+			else {
+				pedge e = N_Src->edges;
+				N_Src->edges = N_Src->edges->next;
+				N_Src->edges = (pedge)malloc(sizeof(edge));
+				if (N_Src->edges == NULL) {
+					return;
+				}
+				N_Src->edges->target = N_Dest;
+				N_Src->edges->weight = size;
+				N_Src->edges->next = e;
 
-
-void build_graph_cmd(int numOfNodes, pnode *head) {
-    char a;
-    for (int i = 0; i < numOfNodes; i++) {
-        scanf("%c", &a);
-        if (a == 'n') {
-            printf("%c",a);
-            insert_node_cmd(head);
-
-        }
+			}
+			scanf("%c", &flag);
+			scanf("%c", &flag);
+			dest = (flag)-'0';
+		}
     }
 }
+
+
 
 pnode nodeExist(pnode *head, int ID){
     pnode current = *head;
@@ -233,4 +246,14 @@ void deleteGraph_cmd(pnode* head){
     }
     free(tempNode);
 }
-
+void build_graph_cmd(pnode *head) {
+	deleteGraph_cmd(head);
+	int numOfNodes;
+	scanf("%d", &numOfNodes);
+    char a;
+	scanf("%c", &a);
+	scanf("%c", &a);
+	for (int i = 0; i < numOfNodes; i++) {
+		insert_node_cmd(head);
+	}
+}
