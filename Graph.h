@@ -20,7 +20,7 @@ typedef struct GRAPH_NODE_ {
 
 node* create_Node(int ID);
 edge* create_Edge(pnode target, int w);
-void build_graph_cmd(int num, pnode *head);
+void build_graph_cmd(pnode *head);
 pnode nodeExist(pnode *head, int ID);
 int minNode(pnode *head) ;
 void insert_node_cmd(pnode *node);
