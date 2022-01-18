@@ -1,19 +1,23 @@
 #include<stdio.h>
 #include<stdlib.h>
-#include<dtring.h>
+#include<string.h>
+#include "Algo.h"
+#include "Graph.h"
+
+
 
 int main()
 {
     pnode temp = NULL;
     pnode *head = &temp;
     char input = '\0';
+    int numOfNodes=0;
     while (scanf("%c", &input) != EOF)
     {
         if (input == 'A')
         {
-           // deleteGraph_cmd(head)//if this is not a first graph created
-            scanf("%d",nunOfNodes)
-            build_graph_cmd(nunOfNodes);
+            build_graph_cmd(numOfNodes,head);
+            printGraph_cmd(*head);
         }
         else if (input == 'B')
         {

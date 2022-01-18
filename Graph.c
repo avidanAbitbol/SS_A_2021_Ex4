@@ -1,69 +1,35 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <ctype.h>
-#include "Graph.h"
+#include <limits.h>
+#include "Algo.h"
 
-
-typedef struct GRAPH_NODE_ *pnode;
-
-typedef struct edge_ {
-    int weight;
-    pnode target;
-    struct edge_ *next;
-}
-edge, *pedge;
-
-
-typedef struct node_ {
-    int node_num;
-    pedge edges;
-    struct GRAPH_NODE_ *next;
-}
-node, *pnode;
-
-pnode create_Node(int ID, pnode Next){
-    pnode newNode = (pnode)malloc(sizeof(node));
-    newNode->node_num = ID;
-    newNode->next = Next;
-    newNode->edges = NULL;
-    return newNode;
+node* create_Node(int ID){
+    node* newNode = (node *)malloc(sizeof(node));
+    if(!newNode){//if memory didn't allocate
+        exit(1);
+    }
+    else {
+        newNode->node_num = ID;
+        newNode->next = NULL;
+        newNode->edges = NULL;
+        return newNode;
+    }
 }
 
-pedge create_Edge(pnode target, int w){
+edge* create_Edge(pnode target, int w){
     pedge newEdge = (pedge)malloc(sizeof(edge));
     newEdge->target = target;
     newEdge->next = NULL;
-    newEdge->weight = weight;
+    newEdge->weight = w;
     return newEdge;
 }
 
-void build_graph_cmd(numOfNodes) {
-    for (int i = 0; i < numOfNodes; i++) {
-        scanf("%c", &a);
-        if (a == 'n') {
-            insert_node_cmd(head);
-        }
-    }
-}
-
-int nodeExist(pnode *head, int ID){
-    pnode current = *head;
-    while(current!=null) {
-        if (current->node_num == ID) {
-            return 1;
-        }
-        current = current->next;
-    }
-    return 0;
-    }
-}
 void insert_node_cmd(pnode *head){
-    int newNode = -1;
+    int newNode;
     pnode addedNode;
-    scanf("%d",&newNode);
     if(nodeExist(head, newNode)==0){
-      addedNode = create_Node(newNode, *head)
-  }
+        addedNode = create_Node(newNode);
+    }
     else {
         pnode current = *head;
         while (current != NULL) {
@@ -76,22 +42,21 @@ void insert_node_cmd(pnode *head){
         while (edges != NULL) {
             pedge tmp = edges->next;
             edges = tmp;
-            free(tmp)
+            free(tmp);
         }
         current->edges = NULL;
         addedNode = current;
     }
-
     pedge *insertEdge = &(addedNode->edges);
     int target = -1;
-    while (scanf("%d",&target)!=0)
-    {
+    scanf("%d",&target);
+    printf("%d",&target);
         if(target==-1){
             return;
         }
         pnode tarNode = NULL;
         if(nodeExist(head,target)==0){
-            create_Node(target,head);
+            create_Node(target);
         }
         pnode current = *head;
         while(current!=NULL){
@@ -104,9 +69,49 @@ void insert_node_cmd(pnode *head){
 
         int weight = -1;
         scanf("%d",&weight);
-        *insertEdge = create_Edge(tarNode,weight)
-  }
+        *insertEdge = create_Edge(tarNode,weight);
+    }
+
+
+void build_graph_cmd(int numOfNodes, pnode *head) {
+    char a;
+    for (int i = 0; i < numOfNodes; i++) {
+        scanf("%c", &a);
+        if (a == 'n') {
+            printf("%c",a);
+            insert_node_cmd(head);
+
+        }
+    }
 }
+
+pnode nodeExist(pnode *head, int ID){
+    pnode current = *head;
+    while(current!=NULL) {
+        if(current->node_num>=0){
+            if (current->node_num == ID) {
+                return current;
+            }
+            current = current->next;
+        }
+
+    }
+    return NULL;
+}
+int minNode(pnode *head) {
+    pnode current = *head;
+    int min_value = INT_MAX;
+    int num = 1;
+    while (current != NULL) {
+        if (current->size <= min_value&&current->visit == 0) {
+            min_value = current->size;
+            num = current->node_num;
+        }
+        current = current->next;
+    }
+    return num;
+}
+
 
 
 void delete_node_cmd(pnode *head){
@@ -129,7 +134,7 @@ void delete_node_cmd(pnode *head){
         pedge Edges = tmp->edges;
         while (Edges != NULL)
         {
-            if(Edges->endpoint->node_num == del)
+            if(Edges->target->node_num == del)
             {
                 if(prev_edge == NULL)
                 {
@@ -155,7 +160,7 @@ void delete_node_cmd(pnode *head){
         tmp = tmp->next;
     }
     pnode prev_node = *head;
-    if(prev_node->node_num == delete) {
+    if(prev_node->node_num == del) {
         pedge Edges = prev_node->edges;
         while (Edges != NULL){
             pedge tmp = Edges->next;
@@ -169,7 +174,7 @@ void delete_node_cmd(pnode *head){
         *head = prev_node;
     }
     else{
-        while (prev_node->next != NULL && prev_node->next->node_num != delete){
+        while (prev_node->next != NULL && prev_node->next->node_num != del){
             if(prev_node->next == NULL){
                 return;
             }
@@ -187,48 +192,45 @@ void delete_node_cmd(pnode *head){
         free(Node_to_free);
     }
 }
+void size(pnode *head , int key , int size){
+    pnode current = *head;
+    while(current != NULL){
+        if(current->node_num == key){
+            current->size=size;
+        }
+        current=current->next;
+    }
 }
 void printGraph_cmd(pnode head){
     pnode temp = head;
     while (temp != NULL)
     {
-        printf("Node: %d {", tempNode->node_num);
+        printf("Node: %d {", temp->node_num);
         pedge NodeEdges = temp->edges;
         while (NodeEdges != NULL)
         {
-            printf("dest: %d weight: %d ", NodeEdges->target->node_num, tempEdge->weight);
+            printf("dest: %d weight: %d ", NodeEdges->target->node_num, NodeEdges->weight);
             NodeEdges = NodeEdges->next;
         }
         printf("}");
         temp = temp->next;
     }
 }
-void deleteGraph_cmd(pnode* head){{
-        pnode tempNode = *head;
-        while (tempNode != NULL)
+void deleteGraph_cmd(pnode* head){
+    pnode tempNode = *head;
+    while (tempNode != NULL)
+    {
+        pedge tempEdge = tempNode->edges;
+        while (tempEdge != NULL)
         {
-            pedge tempEdge = tempNode->edges;
-            while (tempEdge != NULL)
-            {
-                pedge deleteEdge = tempEdge;
-                tempEdge = tempEdge->next;
-                free(deleteEdge);
-            }
-            node *deleteNode = tempNode;
-            tempNode = tempNode->next;
-            free(deleteNode);
+            pedge deleteEdge = tempEdge;
+            tempEdge = tempEdge->next;
+            free(deleteEdge);
         }
-        free(tempNode);
+        node *deleteNode = tempNode;
+        tempNode = tempNode->next;
+        free(deleteNode);
     }
-
-
-void shortsPath_cmd(pnode head);
-void TSP_cmd(pnode head);
-
-
-
-
-
-
-
+    free(tempNode);
+}
 
