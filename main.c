@@ -3,6 +3,10 @@
 #include<string.h>
 #include "Algo.h"
 #include "Graph.h"
+#include "Graph.c"
+#include "Algo.c"
+
+
 
 int main()
 {
